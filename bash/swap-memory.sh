@@ -14,4 +14,4 @@ sudo swapon /swapfile
 sudo swapon -s
 
 # Start the swap file at boot time by editing the /etc/fstab file.
-sudo echo /swapfile swap swap defaults 0 0 > /etc/fstab
+sudo echo /swapfile swap swap defaults 0 0 >> /etc/fstab
