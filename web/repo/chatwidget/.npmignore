@@ -1,0 +1,11 @@
+# Source files
+/src
+
+# TypeScript configuration files
+tsconfig.json
+
+# Build artifacts
+/dist
+
+# Test files
+__tests__

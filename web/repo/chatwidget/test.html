@@ -1,0 +1,64 @@
+<style>
+    .chat-box {
+        width: 400px;
+        height: 500px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .chat-messages {
+        height: 400px;
+        overflow-y: scroll;
+    }
+
+    .message {
+        margin: 10px;
+    }
+
+    .sender {
+        font-weight: bold;
+    }
+
+    .chat-input {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-input input {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .chat-input button {
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .chat-input button:hover {
+        background-color: #3e8e41;
+    }
+</style>
+<div class="chat-box">
+    <div class="chat-messages">
+        <div class="message">
+            <div class="sender">John Doe</div>
+            <div class="text">Hey, how's it going?</div>
+        </div>
+        <div class="message">
+            <div class="sender">Jane Smith</div>
+            <div class="text">Not bad, thanks. How about you?</div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type your message here...">
+        <button>Send</button>
+    </div>
+</div>

@@ -1,0 +1,226 @@
+<style>
+    @media only screen and (max-width: 768px) {
+        .chat-box {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        .chat-header {
+            font-size: 16px;
+        }
+
+        .chat-messages {
+            font-size: 14px;
+        }
+
+        .message .text {
+            max-width: 80%;
+        }
+
+        .chat-input {
+            border: none;
+            border-top: 1px solid #075E54;
+            border-bottom: 1px solid #075E54;
+            padding: 8px;
+        }
+
+        .chat-input input[type="text"] {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .chat-input button {
+            padding: 6px 12px;
+        }
+    }
+
+    .chat-box {
+        width: 400px;
+        height: 500px;
+        background-color: #f6f6f6;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-header {
+        background-color: #075E54;
+        color: #fff;
+        padding: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-title {
+        flex: 1;
+    }
+
+    .chat-messages {
+        flex: 1;
+        background-color: #fff;
+        padding: 10px;
+        overflow-y: scroll;
+        display: flex;
+        /* added */
+        flex-direction: column;
+        /* added */
+    }
+
+    .message {
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .message .metadata {
+        font-size: 12px;
+        color: #999;
+        margin-left: 5px;
+        margin-top: 3px;
+    }
+
+    .message .text {
+        background-color: #dcf8c6;
+        color: #000;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 16px;
+        max-width: 100%;
+        position: relative;
+    }
+
+
+    .message.outgoing {
+        align-self: flex-end;
+    }
+
+    .message.outgoing .text {
+        background-color: #DCF8C6;
+        color: #000;
+    }
+
+    .message.incoming {
+        align-self: flex-start;
+    }
+
+    .message.incoming .text {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .message.incoming .sender {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 5px;
+    }
+
+    .chat-input {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+    }
+
+    .chat-input input {
+        flex: 1;
+        margin-right: 10px;
+        border: none;
+        padding: 10px;
+        border-radius: 20px;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+        font-size: 16px;
+    }
+
+    .chat-input button {
+        background-color: #128C7E;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-input button:hover {
+        background-color: #075E54;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #075E54;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #f6f6f6;
+    }
+</style>
+<div class="chat-box">
+    <div class="chat-header">
+        <div class="chat-title">Chat with John Doe</div>
+    </div>
+    <div class="chat-messages">
+        <div class="message outgoing">
+            <div class="text">Hey, how's it going?</div>
+            <div class="metadata">10:00 AM</div>
+        </div>
+        <div class="message incoming">
+            <div class="sender">John Doe</div>
+            <div class="text">Not bad, thanks. How about you?</div>
+            <div class="metadata">10:02 AM</div>
+        </div>
+        <div class="message outgoing">
+            <div class="text">I'm doing well, thanks.</div>
+            <div class="metadata">10:03 AM</div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type a message">
+        <button>Send</button>
+    </div>
+</div>
+
+
+<script>
+    class Overlay {
+        element = null;
+
+        init(onClose) {
+            const overlay = document.createElement('div');
+            overlay.classList.add('chat-overlay');
+            overlay.style.display = 'none';
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            overlay.style.zIndex = 9998;
+            this.element = overlay;
+            document.body.appendChild(this.element);
+            this.element.addEventListener('click', onClose);
+            return overlay;
+        }
+
+        show() {
+            this.element.style.display = 'block';
+        }
+
+        hide() {
+            this.element.style.display = 'none';
+        }
+    }
+
+    class 
+</script>

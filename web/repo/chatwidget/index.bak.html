@@ -1,0 +1,256 @@
+<style>
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        width: 700px;
+        height: 40px;
+    }
+
+    .chat-widget--mobile {
+        width: 100%;
+        height: 60px;
+        border-radius: 30px;
+    }
+
+    .chat-widget--mobile .chat-box {
+        width: calc(100% - 20px);
+        height: calc(100% - 80px);
+        bottom: 60px;
+    }
+
+    .chat-box {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        width: 700px;
+        height: 700px;
+        background-color: #f4f4f4;
+        border: 1px solid #e0e0e0;
+        overflow: auto;
+        border-radius: 8px;
+        z-index: 9999;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .chat-box--mobile {
+        width: 100%;
+        height: calc(100% - 100px);
+        bottom: 60px;
+    }
+
+    .chat-message {
+        padding: 10px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .chat-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        border: none;
+        border-radius: 50%;
+        background-color: #4b7bec;
+        color: #fff;
+        font-size: 20px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .chat-button:hover {
+        background-color: #3867d6;
+    }
+
+    .chat-button:active {
+        background-color: #2d98da;
+    }
+    svg {
+        width: 30px;
+        height: 30px;
+    }
+</style>
+<!-- The rest of the script remains the same -->
+
+</style>
+<script>
+    class Overlay {
+        element = null;
+
+        init(onClose) {
+            const overlay = document.createElement('div');
+            overlay.classList.add('chat-overlay');
+            overlay.style.display = 'none';
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            overlay.style.zIndex = 9998;
+            this.element = overlay;
+            document.body.appendChild(this.element);
+            this.element.addEventListener('click', onClose);
+            return overlay;
+        }
+
+        show() {
+            this.element.style.display = 'block';
+        }
+
+        hide() {
+            this.element.style.display = 'none';
+        }
+    }
+
+    class ChatWidget {
+        widgetElement = null;
+        chatButtonElement = null;
+        chatBoxElement = null;
+        svgOpen = null;
+        svgClose = null;
+        isOpen = false;
+
+        constructor() {
+            this.svgOpen = `
+            <svg class="svg-icon" style="width: 30px; height: 30px;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <path d="M920.5 515.8c-22.1 0-40 17.9-40 40 0 83.2-42.7 159.6-117.1 209.7l-21.9 14.7 10.8 56.4-83-28.9-11.1 2.4c-22.7 5-46.2 7.5-69.8 7.5-22.1 0-40 17.9-40 40s17.9 40 40 40c25.5 0 50.9-2.4 75.7-7.1l192.8 67.1-27.1-141.7c36.3-28.5 66.7-63.5 88.8-102.4 27.4-48.4 41.9-103 41.9-157.9 0-21.9-17.9-39.8-40-39.8z"  />
+            <path d="M808.4 562.7c20.6-44.3 31.1-91.4 31.1-140s-10.5-95.7-31.1-140c-19.8-42.5-48-80.6-83.9-113.3-73.1-66.5-170.1-103.1-273-103.1s-199.9 36.6-273 103.1c-35.9 32.7-64.2 70.8-83.9 113.3-20.6 44.3-31.1 91.4-31.1 140 0 57.2 15.1 114.1 43.7 164.5 23.1 40.8 55.2 77.6 93.5 107.4l-28 146.4 199.4-69.4c26 5 52.7 7.5 79.4 7.5 102.9 0 199.9-36.6 273-103.1 35.9-32.7 64.1-70.8 83.9-113.3zM451.5 699c-24.9 0-49.6-2.7-73.6-7.9l-11.1-2.4-89.6 31.2 11.7-61.1-21.9-14.9c-78.5-52.8-123.5-133.5-123.5-221.3 0-152.4 138.2-276.4 308-276.4s308 124 308 276.4c0 152.5-138.2 276.4-308 276.4z"  />
+            <path d="M232.923859 443.627447a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+            <path d="M416.026252 443.637225a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+            <path d="M599.128939 443.647711a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+        `;
+            this.svgClose = `
+        <svg class="svg-icon" style="width: 30px; height: 30px;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <path d="M920.5 515.8c-22.1 0-40 17.9-40 40 0 83.2-42.7 159.6-117.1 209.7l-21.9 14.7 10.8 56.4-83-28.9-11.1 2.4c-22.7 5-46.2 7.5-69.8 7.5-22.1 0-40 17.9-40 40s17.9 40 40 40c25.5 0 50.9-2.4 75.7-7.1l192.8 67.1-27.1-141.7c36.3-28.5 66.7-63.5 88.8-102.4 27.4-48.4 41.9-103 41.9-157.9 0-21.9-17.9-39.8-40-39.8z"  /><path d="M808.4 562.7c20.6-44.3 31.1-91.4 31.1-140s-10.5-95.7-31.1-140c-19.8-42.5-48-80.6-83.9-113.3-73.1-66.5-170.1-103.1-273-103.1s-199.9 36.6-273 103.1c-35.9 32.7-64.2 70.8-83.9 113.3-20.6 44.3-31.1 91.4-31.1 140 0 57.2 15.1 114.1 43.7 164.5 23.1 40.8 55.2 77.6 93.5 107.4l-28 146.4 199.4-69.4c26 5 52.7 7.5 79.4 7.5 102.9 0 199.9-36.6 273-103.1 35.9-32.7 64.1-70.8 83.9-113.3zM451.5 699c-24.9 0-49.6-2.7-73.6-7.9l-11.1-2.4-89.6 31.2 11.7-61.1-21.9-14.9c-78.5-52.8-123.5-133.5-123.5-221.3 0-152.4 138.2-276.4 308-276.4s308 124 308 276.4c0 152.5-138.2 276.4-308 276.4z"  />
+        <path d="M232.923859 443.627447a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+        <path d="M416.026252 443.637225a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+        <path d="M599.128939 443.647711a41.2 41.2 0 1 0 58.264582-58.266616 41.2 41.2 0 1 0-58.264582 58.266616Z"  />
+        `
+
+            this.widgetElement = document.createElement('div');
+            this.widgetElement.classList.add('chat-widget');
+            this.widgetElement.addEventListener('click', this.toggleChatBox.bind(this));
+
+            this.chatButtonElement = document.createElement('button');
+            this.chatButtonElement.classList.add('chat-button');
+            this.chatButtonElement.innerHTML = this.svgOpen;
+            this.widgetElement.appendChild(this.chatButtonElement);
+
+            this.chatBoxElement = document.createElement('div');
+            this.chatBoxElement.classList.add('chat-box');
+            this.chatBoxElement.style.display = 'none';
+            this.widgetElement.appendChild(this.chatBoxElement);
+
+            this.overlay = new Overlay();
+            this.overlay.init((() => {
+                this.close();
+            }).bind(this));
+            document.body.appendChild(this.widgetElement);
+        }
+
+        async loadHistory() {
+            const deviceId = this.getDeviceId();
+            const msg = await fetch(`https://web.api.finddoc.io/chat`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-device-id": 'sjh0blcu04ecgx22ojf1kg'//deviceId,
+                },
+            });
+            const history = await msg.json();
+            console.log(history);
+            return history;
+        }
+
+        toggleChatBox() {
+            this.isOpen = !this.isOpen;
+            if (this.isOpen) {
+                this.open();
+            } else {
+                this.close();
+            }
+        }
+
+        open() {
+            this.isOpen = true;
+            this.chatBoxElement.style.display = 'block';
+            this.overlay.show();
+            this.chatButtonElement.innerHTML = this.svgOpen;
+        }
+
+        close() {
+            this.isOpen = false;
+            this.chatBoxElement.style.display = 'none';
+            this.overlay.hide();
+            this.chatButtonElement.innerHTML = this.svgClose;
+        }
+
+        addMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message');
+            messageElement.innerHTML = message;
+            this.chatBoxElement.appendChild(messageElement);
+        }
+
+        getDeviceId() {
+            const deviceId = localStorage.getItem('FINDDOC_DEVICE_ID');
+            if (!deviceId) {
+                const newDeviceId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('FINDDOC_DEVICE_ID', newDeviceId);
+                return newDeviceId;
+            }
+            return deviceId;
+        }
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function init() {
+        const chatWidget = new ChatWidget();
+        const history = await chatWidget.loadHistory();
+        for (const h of history) {
+            // h.type === 'q' | 'a'
+            chatWidget.addMessage(escapeHtml(h.message).replace(/\n/g, '<br/>'));
+        }
+    }
+
+    window.addEventListener('load', function () {
+        init()
+    });
+</script>
+
+<body>
+
+</body>
+<!-- <div id="chat-widget">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff" width="32px" height="32px">
+        <path
+            d="M12 0a12 12 0 0 0-9.547 18.765L.003 23.28l1.785-5.406A12 12 0 1 0 12 0zm0 21.857c-2.946 0-5.329-2.295-5.329-5.143 0-1.26.46-2.428 1.229-3.286l.005-.005 1.216-1.248c.385-.394.713-.643.97-.885.246-.23.434-.41.607-.766.178-.356.27-.8.27-1.354 0-1.662-1.07-2.996-2.84-2.996-1.507 0-2.377.865-2.808 1.317l-.026.03-.9.921-.056.07c-.138.178-.256.333-.348.47-.205.282-.3.502-.3.765 0 .63.452 1.161 1.082 1.161.154 0 .316-.031.485-.08l.066-.02.974-.5.01-.007c.735-.364 1.427-.56 2.03-.56 2.946 0 5.329 2.295 5.329 5.143 0 2.849-2.383 5.143-5.329 5.143z" />
+    </svg>
+    <div id="message-box">
+        <div id="message-container"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button type="submit">Send</button>
+        </form>
+    </div> -->
+<!-- </div> -->

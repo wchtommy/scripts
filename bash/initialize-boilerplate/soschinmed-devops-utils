@@ -1,0 +1,15 @@
+# clone repo
+git clone git@github.com:karmadevtech/devops-soschimed-utility.git
+
+# setup
+cd devops-soschimed-utility
+./setup.sh
+
+# Login aws registry
+aws ecr get-login-password --region ap-east-1 | docker login --username AWS --password-stdin 677387279047.dkr.ecr.ap-east-1.amazonaws.com
+
+# 
+docker-compose up
+
+
+

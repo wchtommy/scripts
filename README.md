@@ -9,7 +9,7 @@
 # Development
 
 ## Styles
-[./css/consistent-logo.css](./css/consistent-logo.css) CSS for consistent logo style
+[./web/css/consistent-logo.css](./css/consistent-logo.css) CSS for consistent logo style
 
 ## Text
 [./utf8/text-symbols.md](./utf8/text-symbols.md) Useful UTF8 symbols to copy paste into hardcode strings
